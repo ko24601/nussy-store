@@ -427,6 +427,48 @@
 
   .btn-buy:hover { background: #fff; box-shadow: 0 0 16px var(--neon-glow); }
 
+  /* ── SIZE SELECTOR ── */
+  .size-selector {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+
+  .size-selector label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    width: 100%;
+    margin-bottom: 4px;
+  }
+
+  .size-btn {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 1px;
+    padding: 5px 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .size-btn:hover { border-color: var(--neon); color: var(--neon); }
+  .size-btn.selected { border-color: var(--neon); color: var(--black); background: var(--neon); }
+
+  .size-warning {
+    font-size: 11px;
+    color: #ff5555;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    display: none;
+  }
+
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
@@ -599,9 +641,18 @@
         <div class="product-cat">Team Wear</div>
         <div class="product-name">Official Nussy Motorsport Merch / Team Wear</div>
         <div class="product-desc">Official Nussy Motorsport team wear. Extremely good quality for high quality fans.</div>
+        <div class="size-selector">
+          <label>Select Size</label>
+          <button class="size-btn" onclick="selectSize(this)">S</button>
+          <button class="size-btn" onclick="selectSize(this)">M</button>
+          <button class="size-btn" onclick="selectSize(this)">L</button>
+          <button class="size-btn" onclick="selectSize(this)">XL</button>
+          <button class="size-btn" onclick="selectSize(this)">XXL</button>
+        </div>
+        <div class="size-warning" id="warn-hoodie">⚠ Please select a size</div>
         <div class="product-footer">
           <div class="product-price">€65.00</div>
-          <a href="https://buy.stripe.com/test_14A28kbV71e93yu5Uo4Ja00" target="_blank" class="btn-buy">Buy Now</a>
+          <button class="btn-buy" onclick="buyWithSize(this, 'https://buy.stripe.com/test_14A28kbV71e93yu5Uo4Ja00', 'warn-hoodie')">Buy Now</button>
         </div>
       </div>
     </div>
@@ -612,9 +663,18 @@
         <div class="product-cat">T-Shirt</div>
         <div class="product-name">Nussy Motorsport Race Tee</div>
         <div class="product-desc">Official Nussy Motorsport t-shirt. Lightweight and comfortable for on and off the track.</div>
+        <div class="size-selector">
+          <label>Select Size</label>
+          <button class="size-btn" onclick="selectSize(this)">S</button>
+          <button class="size-btn" onclick="selectSize(this)">M</button>
+          <button class="size-btn" onclick="selectSize(this)">L</button>
+          <button class="size-btn" onclick="selectSize(this)">XL</button>
+          <button class="size-btn" onclick="selectSize(this)">XXL</button>
+        </div>
+        <div class="size-warning" id="warn-tshirt">⚠ Please select a size</div>
         <div class="product-footer">
           <div class="product-price">€49.99</div>
-          <a href="https://buy.stripe.com/cNiaEW7hM85s5OB1g22B204" target="_blank" class="btn-buy">Buy Now</a>
+          <button class="btn-buy" onclick="buyWithSize(this, 'https://buy.stripe.com/cNiaEW7hM85s5OB1g22B204', 'warn-tshirt')">Buy Now</button>
         </div>
       </div>
     </div>
@@ -625,9 +685,16 @@
         <div class="product-cat">Cap</div>
         <div class="product-name">Nussy Motorsport Cap</div>
         <div class="product-desc">Official Nussy Motorsport cap. Represent the team on and off the grid.</div>
+        <div class="size-selector">
+          <label>Select Size</label>
+          <button class="size-btn" onclick="selectSize(this)">S/M</button>
+          <button class="size-btn" onclick="selectSize(this)">L/XL</button>
+          <button class="size-btn" onclick="selectSize(this)">One Size</button>
+        </div>
+        <div class="size-warning" id="warn-cap">⚠ Please select a size</div>
         <div class="product-footer">
           <div class="product-price">€24.99</div>
-          <a href="https://buy.stripe.com/dRmbJ0dGa99w7WJ3oa2B205" target="_blank" class="btn-buy">Buy Now</a>
+          <button class="btn-buy" onclick="buyWithSize(this, 'https://buy.stripe.com/dRmbJ0dGa99w7WJ3oa2B205', 'warn-cap')">Buy Now</button>
         </div>
       </div>
     </div>
@@ -709,6 +776,24 @@
 </footer>
 
 <script>
+  function selectSize(btn) {
+    const siblings = btn.closest('.size-selector').querySelectorAll('.size-btn');
+    siblings.forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function buyWithSize(btn, url, warnId) {
+    const card = btn.closest('.product-card');
+    const selected = card.querySelector('.size-btn.selected');
+    if (!selected) {
+      document.getElementById(warnId).style.display = 'block';
+      return;
+    }
+    document.getElementById(warnId).style.display = 'none';
+    const size = selected.textContent;
+    window.open(url + '?client_reference_id=Size-' + encodeURIComponent(size), '_blank');
+  }
+
   function filterProducts(cat, btn) {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
